@@ -240,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
+        /*
         switch (id) {
             case R.id.nav_about:
                 switchFragment(AboutFragment.class);
@@ -265,6 +266,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_log:
                 switchFragment(LogFragment.class);
                 break;
+        }
+
+         */
+        // 替换原来的switch语句
+        if (id == R.id.nav_about) {
+            switchFragment(AboutFragment.class);
+        } else if (id == R.id.nav_dns_server) {
+            switchFragment(DnsServersFragment.class);
+        } else if (id == R.id.nav_dns_test) {
+            switchFragment(DnsTestFragment.class);
+        } else if (id == R.id.nav_github) {
+            Daedalus.openUri("https://github.com/iTXTech/Daedalus");
+        } else if (id == R.id.nav_home) {
+            switchFragment(HomeFragment.class);
+        } else if (id == R.id.nav_rules) {
+            switchFragment(RulesFragment.class);
+        } else if (id == R.id.nav_settings) {
+            switchFragment(SettingsFragment.class);
+        } else if (id == R.id.nav_log) {
+            switchFragment(LogFragment.class);
         }
 
         DrawerLayout drawer = findViewById(R.id.main_drawer_layout);

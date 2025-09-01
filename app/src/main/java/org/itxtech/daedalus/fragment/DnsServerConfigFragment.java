@@ -79,47 +79,42 @@ public class DnsServerConfigFragment extends ConfigFragment {
     public boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id) {
-            case R.id.action_apply:
-                String serverName = ((EditTextPreference) findPreference("serverName")).getText();
-                String serverAddress = ((EditTextPreference) findPreference("serverAddress")).getText();
-                String serverPort = ((EditTextPreference) findPreference("serverPort")).getText();
+        if (id == R.id.action_apply) {
+            String serverName = ((EditTextPreference) findPreference("serverName")).getText();
+            String serverAddress = ((EditTextPreference) findPreference("serverAddress")).getText();
+            String serverPort = ((EditTextPreference) findPreference("serverPort")).getText();
 
-                if (serverName.equals("") | serverAddress.equals("") | serverPort.equals("")) {
-                    Snackbar.make(getView(), R.string.notice_fill_in_all, Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    break;
-                }
+            if (serverName.equals("") | serverAddress.equals("") | serverPort.equals("")) {
+                Snackbar.make(getView(), R.string.notice_fill_in_all, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
 
-                if (index == ConfigActivity.ID_NONE) {
-                    Daedalus.configurations.getCustomDNSServers().add(new CustomDnsServer(serverName, serverAddress, Integer.parseInt(serverPort)));
-                } else {
-                    CustomDnsServer server = Daedalus.configurations.getCustomDNSServers().get(index);
-                    server.setName(serverName);
-                    server.setAddress(serverAddress);
-                    server.setPort(Integer.parseInt(serverPort));
-                }
+            if (index == ConfigActivity.ID_NONE) {
+                Daedalus.configurations.getCustomDNSServers().add(new CustomDnsServer(serverName, serverAddress, Integer.parseInt(serverPort)));
+            } else {
+                CustomDnsServer server = Daedalus.configurations.getCustomDNSServers().get(index);
+                server.setName(serverName);
+                server.setAddress(serverAddress);
+                server.setPort(Integer.parseInt(serverPort));
+            }
+            Daedalus.setRulesChanged();
+            getActivity().finish();
+        } else if (id == R.id.action_delete) {
+            if (index != ConfigActivity.ID_NONE) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.notice_delete_confirm_prompt)
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                            Daedalus.configurations.getCustomDNSServers().remove(index);
+                            getActivity().finish();
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .create()
+                        .show();
+            } else {
                 Daedalus.setRulesChanged();
                 getActivity().finish();
-                break;
-            case R.id.action_delete:
-                if (index != ConfigActivity.ID_NONE) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.notice_delete_confirm_prompt)
-                            .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                                Daedalus.configurations.getCustomDNSServers().remove(index);
-                                getActivity().finish();
-                            })
-                            .setNegativeButton(android.R.string.no, null)
-                            .create()
-                            .show();
-                } else {
-                    Daedalus.setRulesChanged();
-                    getActivity().finish();
-                }
-                break;
+            }
         }
-
         return true;
     }
 }

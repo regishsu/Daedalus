@@ -294,32 +294,28 @@ public class RuleConfigFragment extends ConfigFragment {
     public boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id) {
-            case R.id.action_apply:
-                if (save()) {
-                    getActivity().finish();
-                }
-                break;
-            case R.id.action_delete:
-                if (this.id != ConfigActivity.ID_NONE) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.notice_delete_confirm_prompt)
-                            .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                                Rule rule = Rule.getRuleById(String.valueOf(RuleConfigFragment.this.id));
-                                if (rule != null) {
-                                    rule.removeFromConfig();
-                                }
-                                getActivity().finish();
-                            })
-                            .setNegativeButton(android.R.string.no, null)
-                            .create()
-                            .show();
-                } else {
-                    getActivity().finish();
-                }
-                break;
+        if (id == R.id.action_apply) {
+            if (save()) {
+                getActivity().finish();
+            }
+        } else if (id == R.id.action_delete) {
+            if (this.id != ConfigActivity.ID_NONE) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.notice_delete_confirm_prompt)
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                            Rule rule = Rule.getRuleById(String.valueOf(RuleConfigFragment.this.id));
+                            if (rule != null) {
+                                rule.removeFromConfig();
+                            }
+                            getActivity().finish();
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .create()
+                        .show();
+            } else {
+                getActivity().finish();
+            }
         }
-
         return true;
     }
 

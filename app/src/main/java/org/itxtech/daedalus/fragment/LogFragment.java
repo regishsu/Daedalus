@@ -67,19 +67,14 @@ public class LogFragment extends ToolbarFragment implements Toolbar.OnMenuItemCl
     public boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id) {
-            case R.id.action_delete:
-                Logger.init();
-                refresh();
-                break;
-            case R.id.action_refresh:
-                refresh();
-                break;
-            case R.id.action_export:
+        if (id == R.id.action_delete) {
+            Logger.init();
+            refresh();
+        } else if (id == R.id.action_refresh) {
+            refresh();
+        } else if (id == R.id.action_export){
                 export();
-                break;
         }
-
         return true;
     }
 }
