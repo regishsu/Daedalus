@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -67,7 +68,7 @@ public class DnsTestFragment extends ToolbarFragment {
         final TextView textViewTestInfo = view.findViewById(R.id.textView_test_info);
 
         final Spinner spinnerServerChoice = view.findViewById(R.id.spinner_server_choice);
-        ArrayAdapter spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, DnsServerHelper.getAllServers());
+        ArrayAdapter<AbstractDnsServer> spinnerArrayAdapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_list_item_1, DnsServerHelper.getAllServers());
         spinnerServerChoice.setAdapter(spinnerArrayAdapter);
         spinnerServerChoice.setSelection(DnsServerHelper.getPosition(DnsServerHelper.getPrimary()));
 
@@ -94,11 +95,11 @@ public class DnsTestFragment extends ToolbarFragment {
         }};
 
         final Spinner spinnerType = view.findViewById(R.id.spinner_type);
-        ArrayAdapter<Type> typeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, types);
+        ArrayAdapter<Type> typeAdapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_list_item_1, types);
         spinnerType.setAdapter(typeAdapter);
 
         final AutoCompleteTextView textViewTestDomain = view.findViewById(R.id.autoCompleteTextView_test_url);
-        ArrayAdapter autoCompleteArrayAdapter = new ArrayAdapter<>(Daedalus.getInstance(), android.R.layout.simple_list_item_1, Daedalus.DEFAULT_TEST_DOMAINS);
+        ArrayAdapter<String> autoCompleteArrayAdapter = new ArrayAdapter<>(Daedalus.getInstance(), android.R.layout.simple_list_item_1, Daedalus.DEFAULT_TEST_DOMAINS);
         textViewTestDomain.setAdapter(autoCompleteArrayAdapter);
 
         mRunnable = new Runnable() {

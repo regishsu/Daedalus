@@ -46,13 +46,21 @@ public class Daedalus extends Application {
     private static final String SHORTCUT_ID_ACTIVATE = "shortcut_activate";
 
     public static final List<DnsServer> DNS_SERVERS = new ArrayList<DnsServer>() {{
+        /*
         add(new DnsServer("101.101.101.101", R.string.server_twnic_primary));
         add(new DnsServer("101.102.103.104", R.string.server_twnic_secondary));
         add(new DnsServer("rubyfish.cn/dns-query", R.string.server_rubyfish));
         add(new DnsServer("cloudflare-dns.com/dns-query", R.string.server_cloudflare));
         add(new DnsServer("dns.google/dns-query", R.string.server_google_ietf));
         add(new DnsServer("dns.google/resolve", R.string.server_google_json));
-    }};
+         */
+        //Regis modify, https://public-dns.tech.blog/traditional-chinese/
+        add(new DnsServer("8.8.8.8", R.string.Google_DNS_primary));
+        add(new DnsServer("8.8.4.4", R.string.Google_DNS_secondary));
+        add(new DnsServer("9.9.9.9", R.string.IBM_Quad9_Public_DNS ));
+        add(new DnsServer("1.1.1.1", R.string.Cloudflare_Public_DNS));
+        add(new DnsServer("209.244.0.3", R.string.Level3_Public_DNS));
+     }};
 
     public static final ArrayList<Rule> RULES = new ArrayList<Rule>() {{
         add(new Rule("googlehosts/hosts", "googlehosts.hosts", Rule.TYPE_HOSTS,
