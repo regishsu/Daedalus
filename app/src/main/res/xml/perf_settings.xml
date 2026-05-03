@@ -109,6 +109,30 @@
                 android:title="@string/settings_debug_output"
                 android:defaultValue="false"
                 android:enabled="false"/>
+        <SwitchPreference
+                android:key="settings_auto_switch_dns"
+                android:title="@string/settings_auto_switch_dns"
+                android:summary="@string/settings_auto_switch_dns_summary"
+                android:defaultValue="false"
+                android:enabled="false"/>
+        <EditTextPreference
+                android:key="settings_dns_probe_interval"
+                android:title="@string/settings_dns_probe_interval"
+                android:summary="@string/settings_dns_probe_interval_summary"
+                android:defaultValue="30"
+                android:selectAllOnFocus="false"
+                android:singleLine="true"
+                android:numeric="integer"
+                android:enabled="false"/>
+        <EditTextPreference
+                android:key="settings_dns_latency_threshold"
+                android:title="@string/settings_dns_latency_threshold"
+                android:summary="@string/settings_dns_latency_threshold_summary"
+                android:defaultValue="100"
+                android:selectAllOnFocus="false"
+                android:singleLine="true"
+                android:numeric="integer"
+                android:enabled="false"/>
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -43,21 +43,24 @@ public class HttpsIetfProvider extends HttpsProvider {
                                 .build())
                         .get()
                         .build();
+                final long startTime = System.currentTimeMillis();
                 HTTP_CLIENT.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         result = rawRequest;
+                        latency = System.currentTimeMillis() - startTime;
                         completed = true;
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) {
+                        latency = System.currentTimeMillis() - startTime;
                         if (response.isSuccessful()) {
                             try {
                                 result = new DnsMessage(response.body().bytes()).asBuilder()
                                         .setId(id).build().toArray();
                                 completed = true;
-                            } catch (Exception ignored) {//throw IllegalArgumentException when response is not correct
+                            } catch (Exception ignored) {
                             }
                         }
                     }

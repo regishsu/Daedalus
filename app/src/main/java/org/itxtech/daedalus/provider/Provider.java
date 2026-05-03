@@ -3,6 +3,7 @@ package org.itxtech.daedalus.provider;
 import android.os.ParcelFileDescriptor;
 import android.system.Os;
 import org.itxtech.daedalus.Daedalus;
+import org.itxtech.daedalus.server.AbstractDnsServer;
 import org.itxtech.daedalus.service.DaedalusVpnService;
 import org.itxtech.daedalus.util.Logger;
 import org.itxtech.daedalus.util.RuleResolver;
@@ -50,6 +51,10 @@ public abstract class Provider {
     }
 
     public final long getDnsQueryTimes() {
+        return dnsQueryTimes;
+    }
+
+    public static long getDnsQueryTimesStatic() {
         return dnsQueryTimes;
     }
 
@@ -186,4 +191,12 @@ public abstract class Provider {
     }
 
     protected abstract void handleDnsRequest(byte[] packetData) throws DaedalusVpnService.VpnNetworkException;
+
+    protected void reportLatency(AbstractDnsServer server, long latencyMs) {
+    }
+
+    protected void reportFailure(AbstractDnsServer server) {
+    }
+
+    protected abstract AbstractDnsServer getCurrentServer();
 }

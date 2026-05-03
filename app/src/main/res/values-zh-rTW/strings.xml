@@ -76,6 +76,14 @@
     <string name="settings_rule_import_external">外部</string>
     <string name="settings_dns_query_method">DNS 查询方式</string>
     <string name="settings_foreground">運行前臺服務</string>
+    <string name="settings_use_system_dns">使用系統 DNS 作為上游 DNS</string>
+    <string name="settings_auto_switch_dns">自動切換 DNS</string>
+    <string name="settings_auto_switch_dns_summary">根據延遲自動選擇最佳 DNS 伺服器</string>
+    <string name="settings_dns_probe_interval">探測間隔（秒）</string>
+    <string name="settings_dns_probe_interval_summary">定期測試 DNS 延遲的間隔時間</string>
+    <string name="settings_dns_latency_threshold">切換延遲閾值（毫秒）</string>
+    <string name="settings_dns_latency_threshold_summary">當主 DNS 比副 DNS 慢超過此值時自動切換</string>
+    <string name="notice_dns_switched">已切換至</string>
 
     <string name="settings_server_name">伺服器名稱</string>
     <string name="settings_server_address">伺服器網址</string>
@@ -89,6 +97,19 @@
     <string name="server_twnic_primary">Quad 101 主伺服器</string>
     <string name="server_twnic_secondary">Quad 101 輔伺服器</string>
     <string name="server_rubyfish">紅魚 (DoH)</string>
+    <string name="server_cloudflare_udp">Cloudflare 1.1.1.1</string>
+    <string name="server_cloudflare_udp_secondary">Cloudflare 1.0.0.1</string>
+    <string name="server_cloudflare_doh">Cloudflare 1.1.1.1 (DoH)</string>
+    <string name="server_google_udp">Google Public DNS 8.8.8.8</string>
+    <string name="server_google_udp_secondary">Google Public DNS 8.8.4.4</string>
+    <string name="server_quad9_udp">Quad9 9.9.9.9</string>
+    <string name="server_quad9_doh">Quad9 9.9.9.9 (DoH)</string>
+    <string name="server_opendns">OpenDNS</string>
+    <string name="server_opendns_secondary">OpenDNS 備用伺服器</string>
+    <string name="server_adguard_udp">AdGuard DNS</string>
+    <string name="server_adguard_doh">AdGuard DNS (DoH)</string>
+    <string name="server_alidns">阿里雲 DNS 223.5.5.5</string>
+    <string name="server_dnspod">DNSPod 119.29.29.29</string>
 
     <string name="primary_server">主要 DNS 伺服器</string>
     <string name="secondary_server">次要 DNS 伺服器</string>

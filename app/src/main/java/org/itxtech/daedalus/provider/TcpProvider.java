@@ -163,12 +163,31 @@ public class TcpProvider extends UdpProvider {
             int length = stream.readUnsignedShort();
             Log.d(TAG, "Reading length: " + length);
             byte[] data = new byte[length];
-            stream.read(data);
+            long startTime = System.currentTimeMillis();
+            int totalRead = 0;
+            while (totalRead < length) {
+                int read = stream.read(data, totalRead, length - totalRead);
+                if (read == -1) break;
+                totalRead += read;
+            }
+            long latency = System.currentTimeMillis() - startTime;
             dnsSocket.close();
+            AbstractDnsServer server = getCurrentServer();
+            if (server != null) {
+                reportLatency(server, latency);
+            }
             handleDnsResponse(parsedPacket, data);
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            AbstractDnsServer server = getCurrentServer();
+            if (server != null) {
+                reportFailure(server);
+            }
         }
+    }
+
+    @Override
+    protected AbstractDnsServer getCurrentServer() {
+        return currentServer.get();
     }
 
     /**

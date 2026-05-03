@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient;
 import org.itxtech.daedalus.Daedalus;
 import org.itxtech.daedalus.service.DaedalusVpnService;
 import org.itxtech.daedalus.util.Logger;
+import org.itxtech.daedalus.server.AbstractDnsServer;
 import org.itxtech.daedalus.server.DnsServerHelper;
 import org.minidns.dnsmessage.DnsMessage;
 import org.pcap4j.packet.IpPacket;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Daedalus Project
@@ -44,6 +46,7 @@ abstract public class HttpsProvider extends Provider {
     private static final String TAG = "HttpsProvider";
 
     final WhqList whqList = new WhqList();
+    final AtomicReference<AbstractDnsServer> currentServer = new AtomicReference<>();
 
     HttpsProvider(ParcelFileDescriptor descriptor, DaedalusVpnService service) {
         super(descriptor, service);
@@ -100,6 +103,14 @@ abstract public class HttpsProvider extends Provider {
                 while (iterator.hasNext()) {
                     WaitingHttpsRequest request = iterator.next();
                     if (request.completed) {
+                        AbstractDnsServer server = currentServer.get();
+                        if (server != null) {
+                            if (request.latency > 0) {
+                                reportLatency(server, request.latency);
+                            } else {
+                                reportFailure(server);
+                            }
+                        }
                         handleDnsResponse(request.packet, request.result);
                         iterator.remove();
                     }
@@ -138,7 +149,9 @@ abstract public class HttpsProvider extends Provider {
             return;
         String uri;
         try {
-            uri = service.dnsServers.get(destAddr.getHostAddress()).getAddress();//https uri
+            AbstractDnsServer dnsServer = service.dnsServers.get(destAddr.getHostAddress());
+            uri = dnsServer.getAddress();
+            currentServer.set(dnsServer);
         } catch (Exception e) {
             Logger.logException(e);
             return;
@@ -174,10 +187,16 @@ abstract public class HttpsProvider extends Provider {
     protected abstract void sendRequestToServer(IpPacket parsedPacket, DnsMessage message, String uri);
     //uri example: 1.1.1.1:1234/dnsQuery. The specified provider will add https:// and parameters
 
+    @Override
+    protected AbstractDnsServer getCurrentServer() {
+        return currentServer.get();
+    }
+
     public abstract static class WaitingHttpsRequest {
         public boolean completed = false;
         public byte[] result;
         public final IpPacket packet;
+        public long latency = -1;
 
         public WaitingHttpsRequest(IpPacket packet) {
             this.packet = packet;

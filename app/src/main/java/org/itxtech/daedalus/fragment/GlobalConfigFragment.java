@@ -55,6 +55,24 @@ public class GlobalConfigFragment extends PreferenceFragmentCompat {
             return true;
         });
 
+        EditTextPreference probeInterval = findPreference("settings_dns_probe_interval");
+        if (probeInterval != null) {
+            probeInterval.setSummary(probeInterval.getText());
+            probeInterval.setOnPreferenceChangeListener((preference, newValue) -> {
+                preference.setSummary((String) newValue);
+                return true;
+            });
+        }
+
+        EditTextPreference latencyThreshold = findPreference("settings_dns_latency_threshold");
+        if (latencyThreshold != null) {
+            latencyThreshold.setSummary(latencyThreshold.getText());
+            latencyThreshold.setOnPreferenceChangeListener((preference, newValue) -> {
+                preference.setSummary((String) newValue);
+                return true;
+            });
+        }
+
         EditTextPreference logSize = findPreference("settings_log_size");
         logSize.setSummary(logSize.getText());
         logSize.setOnPreferenceChangeListener((preference, newValue) -> {

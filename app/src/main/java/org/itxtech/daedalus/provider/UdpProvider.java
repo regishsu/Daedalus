@@ -24,6 +24,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Daedalus Project
@@ -40,6 +41,7 @@ public class UdpProvider extends Provider {
     private static final String TAG = "UdpProvider";
 
     private final WospList dnsIn = new WospList();
+    protected final AtomicReference<AbstractDnsServer> currentServer = new AtomicReference<>();
 
     public UdpProvider(ParcelFileDescriptor descriptor, DaedalusVpnService service) {
         super(descriptor, service);
@@ -143,9 +145,19 @@ public class UdpProvider extends Provider {
         try {
             byte[] datagramData = new byte[1024];
             DatagramPacket replyPacket = new DatagramPacket(datagramData, datagramData.length);
+            long startTime = System.currentTimeMillis();
             dnsSocket.receive(replyPacket);
+            long latency = System.currentTimeMillis() - startTime;
+            AbstractDnsServer server = currentServer.get();
+            if (server != null) {
+                reportLatency(server, latency);
+            }
             handleDnsResponse(parsedPacket, datagramData);
         } catch (Exception e) {
+            AbstractDnsServer server = currentServer.get();
+            if (server != null) {
+                reportFailure(server);
+            }
             Logger.logException(e);
         }
     }
@@ -182,6 +194,7 @@ public class UdpProvider extends Provider {
         try {
             dnsServer = service.dnsServers.get(destAddr.getHostAddress());
             destAddr = InetAddress.getByName(dnsServer.getHostAddress());
+            currentServer.set(dnsServer);
         } catch (Exception e) {
             Logger.logException(e);
             Logger.error("handleDnsRequest: DNS server alias query failed for " + destAddr.getHostAddress());
@@ -221,6 +234,11 @@ public class UdpProvider extends Provider {
             DatagramPacket outPacket = new DatagramPacket(dnsRawData, 0, dnsRawData.length, destAddr, dnsServer.getPort());
             forwardPacket(outPacket, parsedPacket, dnsServer);
         }
+    }
+
+    @Override
+    protected AbstractDnsServer getCurrentServer() {
+        return currentServer.get();
     }
 
     /**

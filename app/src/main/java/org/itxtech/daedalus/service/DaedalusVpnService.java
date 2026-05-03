@@ -26,6 +26,8 @@ import org.itxtech.daedalus.receiver.StatusBarBroadcastReceiver;
 import org.itxtech.daedalus.server.AbstractDnsServer;
 import org.itxtech.daedalus.server.DnsServer;
 import org.itxtech.daedalus.server.DnsServerHelper;
+import org.itxtech.daedalus.util.Configurations;
+import org.itxtech.daedalus.util.DnsMonitor;
 import org.itxtech.daedalus.util.DnsServersDetector;
 import org.itxtech.daedalus.util.Logger;
 import org.itxtech.daedalus.util.RuleResolver;
@@ -210,6 +212,9 @@ public class DaedalusVpnService extends VpnService implements Runnable {
         activated = false;
         boolean shouldRefresh = false;
         try {
+            if (DnsMonitor.getInstance() != null) {
+                DnsMonitor.getInstance().stop();
+            }
             if (this.descriptor != null) {
                 this.descriptor.close();
                 this.descriptor = null;
@@ -366,6 +371,11 @@ public class DaedalusVpnService extends VpnService implements Runnable {
             if (advanced) {
                 provider = ProviderPicker.getProvider(descriptor, this);
                 provider.start();
+
+                if (Daedalus.getPrefs().getBoolean("settings_auto_switch_dns", false)) {
+                    DnsMonitor.getInstance().start(this, primaryServer, secondaryServer);
+                }
+
                 provider.process();
             } else {
                 while (running) {

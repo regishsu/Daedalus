@@ -50,15 +50,18 @@ public class HttpsJsonProvider extends HttpsProvider {
                                 .build())
                         .get()
                         .build();
+                final long startTime = System.currentTimeMillis();
                 HTTP_CLIENT.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         result = rawRequest;
+                        latency = System.currentTimeMillis() - startTime;
                         completed = true;
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) {
+                        latency = System.currentTimeMillis() - startTime;
                         if (response.isSuccessful()) {
                             try {
                                 JsonObject jsonObject = new JsonParser().parse(response.body().string()).getAsJsonObject();
@@ -71,8 +74,6 @@ public class HttpsJsonProvider extends HttpsProvider {
                                     JsonArray answers = jsonObject.get("Answer").getAsJsonArray();
                                     for (JsonElement answer : answers) {
                                         JsonObject ans = answer.getAsJsonObject();
-                                        //Record.TYPE type = Record.TYPE.getType(ans.get("type").getAsInt());
-                                        // 修改为使用全类名
                                         org.minidns.record.Record.TYPE type = org.minidns.record.Record.TYPE.getType(ans.get("type").getAsInt());
                                         String data = ans.get("data").getAsString();
                                         Data recordData = null;
@@ -110,14 +111,6 @@ public class HttpsJsonProvider extends HttpsProvider {
 
                                         }
                                         if (recordData != null) {
-                                            /*
-                                            msg.addAnswer(new Record<>(ans.get("name").getAsString(),
-                                                    type, 1,
-                                                    ans.get("TTL").getAsLong(),
-                                                    recordData));
-
-                                             */
-                                            // 修改为使用全类名指定minidns的Record类
                                             msg.addAnswer(new org.minidns.record.Record<>(
                                                     ans.get("name").getAsString(),
                                                     type, 1,
@@ -128,7 +121,7 @@ public class HttpsJsonProvider extends HttpsProvider {
                                 }
                                 result = msg.setQrFlag(true).build().toArray();
                                 completed = true;
-                            } catch (Exception ignored) {//throw com.google.gson.JsonSyntaxException when response is not correct
+                            } catch (Exception ignored) {
                             }
                         }
                     }
